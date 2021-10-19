@@ -4,7 +4,6 @@
 # parses out just the domain name and returns it as a string.
 #For example: domain_name("http://github.com/carbonfive/raygun") == "github" 
 import re 
-url = "hi"
 def domain_name(url):
     result = re.search('www.(.*?)\.', url)
 
@@ -19,4 +18,3 @@ def domain_name(url):
     if result3:
         return result3.group(1)
 
-print(domain_name("http://google.co.jp"))
