@@ -2,6 +2,7 @@ package com.company;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class Solutions {
 
@@ -175,6 +176,95 @@ public class Solutions {
 
         return f.substring(0,f.toString().length()-1);
     }
+
+    private static Map<String, Integer> sortByValue(Map<String, Integer> unsortMap, final boolean order)
+    {
+        List<Map.Entry<String, Integer>> list = new LinkedList<>(unsortMap.entrySet());
+
+        // Sorting the list based on values
+        list.sort((o1, o2) -> order ? o1.getValue().compareTo(o2.getValue()) == 0
+                ? o1.getKey().compareTo(o2.getKey())
+                : o1.getValue().compareTo(o2.getValue()) : o2.getValue().compareTo(o1.getValue()) == 0
+                ? o2.getKey().compareTo(o1.getKey())
+                : o2.getValue().compareTo(o1.getValue()));
+        return list.stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b, LinkedHashMap::new));
+
+    }
+
+    /** Write a function that, given a string of text (possibly with punctuation and line-breaks),
+     * returns an array of the top-3 most occurring words,
+     * in descending order of the number of occurrences. **/
+    public static List<String> top3(String s) {
+        HashMap<String, Integer> wordCountMap = new HashMap<>();
+
+        String[] words = s.toLowerCase(Locale.ROOT).split("[^A-Za-z_']+");
+        Arrays.stream(words).toList().forEach(x->wordCountMap.merge(x,1, Integer::sum));
+        Map<String, Integer> sortedMapAsc = sortByValue(wordCountMap, false);
+
+        System.out.println(Arrays.toString(words));
+
+        if(sortedMapAsc.keySet().size()>2){return sortedMapAsc.keySet().stream().toList().subList(0,3);}
+
+        return sortedMapAsc.keySet().stream().toList().subList(0,sortedMapAsc.keySet().size());
+    }
+
+    //Roman Numerals Helper 4kyu
+    public static String toRoman(int n) {
+        if(n>4000) return "Invalid";
+
+        String sn = n+"";
+        char[] cn = sn.toCharArray();
+
+        HashMap<Character, String> romanDict = new HashMap<>();
+        romanDict.put('1', "I");
+        romanDict.put('2', "II");
+        romanDict.put('3', "III");
+        romanDict.put('4', "IV");
+        romanDict.put('5', "V");
+        romanDict.put('6', "VI");
+        romanDict.put('7', "VII");
+        romanDict.put('8', "VIII");
+        romanDict.put('9', "IX");
+
+        StringBuilder sb = new StringBuilder();
+
+        int len = cn.length;
+        for (Character c: cn) {
+            switch (len) {
+                case 4 -> {
+                    sb.append("M".repeat(c - '0'));
+                    len -= 1;
+                }
+                case 3 -> {
+                    if ((c == '5')) {
+                        sb.append("D");
+                    } else {
+                        sb.append("C".repeat(c - '0'));
+                    }
+                    len -= 1;
+                }
+                case 2 -> {
+                    if ((c == '5')) {
+                        sb.append("L");
+                    } else {
+                        sb.append("X".repeat(c - '0'));
+                    }
+                    len -= 1;
+                }
+                case 1 -> {
+                    sb.append(romanDict.get(c));
+                    len -= 1;
+                }
+            }
+        }
+
+        return sb.toString();
+    }
+
+    public static int fromRoman(String romanNumeral) {
+        return 1;
+    }
+
 }
 
 
